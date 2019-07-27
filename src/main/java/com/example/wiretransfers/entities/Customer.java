@@ -14,10 +14,10 @@ public class Customer {
     @Column(name = "customerId", nullable = false)
     private Long customerId;
 
-    @Column(name = "firstName", length = 64, nullable = false)
+    @Column(name = "firstName", nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", length = 64, nullable = false)
+    @Column(name = "lastName", nullable = false)
     private String lastName;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
