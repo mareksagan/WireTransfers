@@ -26,6 +26,8 @@ public class Customer {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Transaction> transactions = new HashSet<Transaction>();
 
+    public Customer() {}
+
     public Customer(Long customerId, String firstName, String lastName) {
         this.customerId = customerId;
         this.firstName = firstName;
