@@ -3,6 +3,7 @@ package com.example.wiretransfers.entities;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "CUSTOMER")
@@ -12,7 +13,7 @@ public class Customer {
     @Id
     @GeneratedValue
     @Column(name = "customerId", nullable = false)
-    private Long customerId;
+    private UUID customerId;
 
     @Column(name = "firstName", nullable = false)
     private String firstName;
@@ -28,34 +29,30 @@ public class Customer {
 
     public Customer() {}
 
-    public Customer(Long customerId, String firstName, String lastName) {
-        this.customerId = customerId;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Customer(String id) {
+        this.customerId = UUID.fromString(id);
     }
 
-    public Long getCustomerId() {
+    public UUID getCustomerId() {
         return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public Customer setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public Customer setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
 
     public Set<Account> getAccounts() {

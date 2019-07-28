@@ -11,6 +11,6 @@ public interface CustomerDAO extends CrudRepository<Customer, Long> {
 
     public List<Customer> findByCustomerId(Long customerId);
 
-    public List<Customer> findByFirstName(String firstName);
+    public List<Customer> findByFirstNameAndLastName(String firstName, String lastName);
 
 }

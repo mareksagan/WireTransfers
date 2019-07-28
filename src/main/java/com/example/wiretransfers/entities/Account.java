@@ -1,8 +1,8 @@
 package com.example.wiretransfers.entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ACCOUNT")
@@ -12,36 +12,41 @@ public class Account {
     @Id
     @GeneratedValue
     @Column(name = "accountNumber", nullable = false)
-    private Long accountNumber;
+    @Size(min = 6)
+    private int accountNumber;
 
     @Column(name = "balance", nullable = false)
     private int balance;
 
     @Column(name = "ownerId", nullable = false)
-    private Long ownerId;
+    private UUID ownerId;
 
-    public Long getAccountNumber() {
-        return accountNumber;
+    public Account() {}
+
+    public Account(int number) {
+        this.accountNumber = number;
     }
 
-    public void setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
     public int getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public Account setBalance(int balance) {
         this.balance = balance;
+        return this;
     }
 
-    public Long getOwnerId() {
+    public UUID getOwnerId() {
         return ownerId;
     }
 
-    public void setBalance(Long ownerId) {
-        this.ownerId = ownerId;
+    public Account setOwnerId(String ownerId) {
+        this.ownerId = UUID.fromString(ownerId);
+        return this;
     }
 
 }

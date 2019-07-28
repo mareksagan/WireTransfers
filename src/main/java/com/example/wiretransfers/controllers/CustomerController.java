@@ -15,9 +15,10 @@ public class CustomerController {
     @ResponseBody
     @RequestMapping("/")
     public String index() {
-        var lastName = customerDAO.findByFirstName("Marius").get(0).getLastName();
+        var lastName = customerDAO.findByFirstNameAndLastName("Alexandra", "Ungureanu")
+                .get(0).getCustomerId();
 
-        return lastName;
+        return lastName.toString();
     }
 
 }
