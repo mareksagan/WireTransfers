@@ -5,11 +5,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface CustomerDAO extends CrudRepository<Customer, Long> {
+public interface CustomerDAO extends CrudRepository<Customer, UUID> {
 
-    public List<Customer> findByCustomerId(Long customerId);
+    public List<Customer> findByCustomerId(String customerId);
 
     public List<Customer> findByFirstNameAndLastName(String firstName, String lastName);
 

@@ -1,18 +1,18 @@
 package com.example.wiretransfers.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "TRANSACTION")
-
 public class Transaction {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "transactionId", nullable = false)
     private UUID transactionId;
 
@@ -31,8 +31,8 @@ public class Transaction {
     @Column(name = "timestamp", columnDefinition = "DATE DEFAULT CURRENT_DATE", nullable = false)
     private Date timestamp;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Account senderAccount = new Account();
+    @ManyToOne
+    private Account account;
 
     public Transaction(int from, int to, int amount) {
         this.senderAccountNumber = from;
@@ -64,7 +64,7 @@ public class Transaction {
     }
 
     public Transaction commit() {
-        if (amount <= senderAccount.getBalance()) commited = true;
+        if (amount <= account.getBalance()) commited = true;
         return this;
     }
 

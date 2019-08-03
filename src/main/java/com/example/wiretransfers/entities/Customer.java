@@ -1,5 +1,7 @@
 package com.example.wiretransfers.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +13,8 @@ import java.util.UUID;
 public class Customer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "customerId", nullable = false)
     private UUID customerId;
 
@@ -21,11 +24,8 @@ public class Customer {
     @Column(name = "lastName", nullable = false)
     private String lastName;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Account> accounts = new HashSet<Account>();
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Transaction> transactions = new HashSet<Transaction>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ownerId")
+    private Set<Account> accounts = new HashSet<>();
 
     public Customer() {}
 
@@ -58,9 +58,4 @@ public class Customer {
     public Set<Account> getAccounts() {
         return accounts;
     }
-
-    public Set<Transaction> getTransactions() {
-        return transactions;
-    }
-
 }

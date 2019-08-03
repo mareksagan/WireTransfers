@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AccountDAO extends CrudRepository<Account, Long> {
+public interface AccountDAO extends CrudRepository<Account, Integer> {
 
-    public Account findByAccountNumber(Long accountNumber);
+    public Account findByAccountNumber(int accountNumber);
 
     public List<Account> findByOwnerId(String ownerId);
 }
