@@ -3,18 +3,14 @@ package com.example.wiretransfers.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "CUSTOMER")
-
 public class Customer {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "customerId", nullable = false)
     private UUID customerId;
 
@@ -24,14 +20,8 @@ public class Customer {
     @Column(name = "lastName", nullable = false)
     private String lastName;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "ownerId")
-    private Set<Account> accounts = new HashSet<>();
-
-    public Customer() {}
-
-    public Customer(String id) {
-        this.customerId = UUID.fromString(id);
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "customer")
+    private List<Account> accounts = new ArrayList<>();
 
     public UUID getCustomerId() {
         return customerId;
@@ -55,7 +45,12 @@ public class Customer {
         return this;
     }
 
-    public Set<Account> getAccounts() {
+    public Account addAccount(Account account) {
+        accounts.add(account);
+        return account;
+    }
+
+    public List<Account> getAccounts() {
         return accounts;
     }
 }

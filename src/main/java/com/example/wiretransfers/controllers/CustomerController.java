@@ -1,15 +1,16 @@
 package com.example.wiretransfers.controllers;
 
+import com.example.wiretransfers.DAOs.AccountDAO;
 import com.example.wiretransfers.DAOs.CustomerDAO;
 import com.example.wiretransfers.entities.Account;
+import com.example.wiretransfers.entities.Customer;
 import com.example.wiretransfers.entities.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class CustomerController {
@@ -17,16 +18,16 @@ public class CustomerController {
     @Autowired
     private CustomerDAO customerDAO;
 
+    @Autowired
+    private AccountDAO accountDAO;
+
     @ResponseBody
     @RequestMapping("/")
-    public List<Transaction> index() {
+    public Customer index() {
 
-        List<Transaction> userTransactions = new ArrayList<>();
+        var customer = customerDAO.findByFirstNameAndLastName("Marius", "Nedelcu").get(0);
 
-        customerDAO.findByCustomerId("5bb07c9c-e2d3-4f82-9a78-9d8dca4688e8").get(0).getAccounts()
-                .forEach(a -> userTransactions.addAll(a.getIncomingTransfers()));
-
-        return userTransactions;
+        return customer;
     }
 
 }

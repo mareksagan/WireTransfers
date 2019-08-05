@@ -1,5 +1,6 @@
 package com.example.wiretransfers.entities;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,16 +12,9 @@ import java.util.UUID;
 public class Transaction {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "transactionId", nullable = false)
     private UUID transactionId;
-
-    @Column(name = "senderAccountNumber", nullable = false)
-    private int senderAccountNumber;
-
-    @Column(name = "receiverAccountNumber", nullable = false)
-    private int receiverAccountNumber;
 
     @Column(name = "amount", nullable = false)
     private int amount;
@@ -28,24 +22,18 @@ public class Transaction {
     @Column(name = "commited", nullable = false)
     private boolean commited = false;
 
-    @Column(name = "timestamp", columnDefinition = "DATE DEFAULT CURRENT_DATE", nullable = false)
-    private Date timestamp;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp = new Date();
 
-    @ManyToOne
-    private Account account;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sentTransfers")
+    private Account senderAccount;
 
-    public Transaction(int from, int to, int amount) {
-        this.senderAccountNumber = from;
-        this.receiverAccountNumber = to;
-        this.amount = amount;
-    }
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "receivedTransfers")
+    private Account receiverAccount;
 
-    public Transaction(String id, int from, int to, int amount) {
-        this.transactionId = UUID.fromString(id);
-        this.senderAccountNumber = from;
-        this.receiverAccountNumber = to;
-        this.amount = amount;
-    }
+    public Transaction() {}
 
     public UUID getTransactionId() {
         return transactionId;
@@ -55,16 +43,42 @@ public class Transaction {
         return amount;
     }
 
-    public int getSenderAccountNumber() {
-        return senderAccountNumber;
+    public Transaction setAmount(int amount) {
+        this.amount = amount;
+        return this;
     }
 
-    public int getReceiverAccountNumber() {
-        return receiverAccountNumber;
+    public int getSenderAccount() {
+        return senderAccount.getAccountNumber();
+    }
+
+    public Transaction setSenderAccount(Account senderAccount) {
+        this.senderAccount = senderAccount;
+        return this;
+    }
+
+    public int getReceiverAccount() {
+        return receiverAccount.getAccountNumber();
+    }
+
+    public Transaction setReceiverAccount(Account receiverAccount) {
+        this.receiverAccount = receiverAccount;
+        return this;
     }
 
     public Transaction commit() {
-        if (amount <= account.getBalance()) commited = true;
+        if (amount <= senderAccount.getBalance()) {
+            var receiverBalance = receiverAccount.getBalance();
+            var senderBalance = senderAccount.getBalance();
+
+            senderAccount.setBalance(senderBalance - amount);
+            receiverAccount.setBalance(receiverBalance + amount);
+
+            senderAccount.getSentTransfers().add(this);
+            receiverAccount.getReceivedTransfers().add(this);
+
+            commited = true;
+        }
         return this;
     }
 

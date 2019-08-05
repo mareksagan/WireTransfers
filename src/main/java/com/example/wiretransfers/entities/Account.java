@@ -1,14 +1,10 @@
 package com.example.wiretransfers.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "ACCOUNT")
-
 public class Account {
 
     @Id
@@ -19,22 +15,23 @@ public class Account {
     @Column(name = "balance", nullable = false)
     private int balance = 0;
 
-    @Column(name = "ownerId", nullable = false)
-    private UUID ownerId;
+    @Column(name = "isActive", nullable = false)
+    private boolean isActive = true;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "senderAccountNumber")
-    private Set<Transaction> outgoingTransfers = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "senderAccount")
+    private List<Transaction> sentTransfers = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "receiverAccountNumber")
-    private Set<Transaction> incomingTransfers = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "receiverAccount")
+    private List<Transaction> receivedTransfers = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customerId")
     private Customer customer;
 
     public Account() {}
 
-    public Account(int number) {
-        this.accountNumber = number;
+    public Account(int initialBalance) {
+        this.balance = initialBalance;
     }
 
     public int getAccountNumber() {
@@ -45,26 +42,39 @@ public class Account {
         return balance;
     }
 
-    public Account setBalance(int balance) {
+    protected Account setBalance(int balance) {
         this.balance = balance;
         return this;
     }
 
     public UUID getOwnerId() {
-        return ownerId;
+        return customer.getCustomerId();
     }
 
-    public Account setOwnerId(String ownerId) {
-        this.ownerId = UUID.fromString(ownerId);
+    protected List<Transaction> getSentTransfers() {
+        return sentTransfers;
+    }
+
+    protected List<Transaction> getReceivedTransfers() {
+        return receivedTransfers;
+    }
+
+    public List<Transaction> getReadonlySentTransfers() {
+        return Collections.unmodifiableList(sentTransfers);
+    }
+
+    public List<Transaction> getReadonlyReceivedTransfers() {
+        return Collections.unmodifiableList(receivedTransfers);
+    }
+
+    public Transaction sendMoney(int amount, Account to) {
+        var transfer = new Transaction().setSenderAccount(this).setReceiverAccount(to).setAmount(amount).commit();
+        return transfer;
+    }
+
+    public Account deactivate() {
+        this.isActive = false;
         return this;
-    }
-
-    public Set<Transaction> getOutgoingTransfers() {
-        return outgoingTransfers;
-    }
-
-    public Set<Transaction> getIncomingTransfers() {
-        return incomingTransfers;
     }
 
 }
