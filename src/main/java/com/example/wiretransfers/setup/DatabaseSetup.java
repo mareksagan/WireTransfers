@@ -26,10 +26,10 @@ public class DatabaseSetup implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        addCustomer();
+        addCustomers();
     }
 
-    private void addCustomer() {
+    private void addCustomers() {
         var newCustomer1 = new Customer().setFirstName("Marius").setLastName("Nedelcu");
         var newCustomer2 = new Customer().setFirstName("Alexandra").setLastName("Ungureanu");
 
