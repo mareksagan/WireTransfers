@@ -1,5 +1,5 @@
 # WireTransfers
-Banking transaction system using Stellar blockchain and Drools BPM
+Banking transaction system using Hyperledger Fabric blockchain and Drools BPM
 
 ## Requirements
 * API will expose an endpoint which accepts the user information (**customerID**, **initialCredit**)
