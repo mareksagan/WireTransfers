@@ -1,5 +1,5 @@
 # WireTransfers
-Banking transaction system using Hyperledger Fabric blockchain and Drools BPM
+Banking transaction system (Java 11, Hyperledger Fabric blockchain, Drools BPM, Axon Framework)
 
 ## Requirements
 * API will expose an endpoint which accepts the user information (**customerID**, **initialCredit**)
